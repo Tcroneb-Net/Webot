@@ -1,0 +1,14 @@
+
+{
+  "name": "webbotx",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Dynamic plugin-based web interface",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
