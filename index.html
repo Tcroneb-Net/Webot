@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>⚙️ WebBotX - Plugin Command Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Rubik', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #f1f1f1;
+    }
+    header {
+      background: #1a1a2e;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-bottom: 2px solid #3f3f5e;
+    }
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background: #161625;
+      padding: 0.8rem;
+    }
+    nav button {
+      background: #4e4eff;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    nav button:hover {
+      background: #7373ff;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 2rem;
+      background: #1c1c2b;
+      border-radius: 16px;
+      margin-top: 1.5rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+    .command-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .command-list button {
+      background: #4e4eff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .command-list button:hover {
+      background: #6868ff;
+    }
+    .output-box {
+      margin-top: 20px;
+      padding: 20px;
+      background: #14141f;
+      border-radius: 10px;
+      font-size: 16px;
+      min-height: 80px;
+      border-left: 4px solid #4e4eff;
+      transition: 0.5s ease;
+    }
+    .quote-box {
+      margin-top: 30px;
+      background: #262640;
+      padding: 1rem;
+      border-left: 3px solid #00ffc3;
+      font-style: italic;
+      border-radius: 10px;
+    }
+    .loading-bar {
+      margin-top: 20px;
+      height: 10px;
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .loading-bar span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(to right, #00f2ff, #4e4eff);
+      animation: load 1.5s forwards;
+    }
+    @keyframes load {
+      to {
+        width: 100%;
+      }
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      padding: 1rem;
+      background: #0f0f1a;
+      border-top: 1px solid #333;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    🤖 WebBotX Dashboard
+  </header>
+
+  <nav>
+    <button onclick="alert('Coming soon')">📂 Menu</button>
+    <button onclick="alert('Live System Active')">🟢 Live</button>
+    <button onclick="alert('Add More Plugins')">➕ Plugins</button>
+  </nav>
+
+  <div class="container">
+    <h2>Available Commands</h2>
+    <div id="commands" class="command-list"></div>
+
+    <div class="loading-bar"><span id="loader"></span></div>
+
+    <div id="result" class="output-box">Select a command to begin...</div>
+
+    <div class="quote-box" id="quoteBox">
+      💡 Loading inspiration...
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 WebBotX | Crafted with 💙 by Tcroneb Hackx | All Rights Reserved.
+  </footer>
+
+  <script type="module">
+    const plugins = [];
+
+    async function loadPlugins() {
+      const pluginFiles = ['uptime.js'];
+      for (const file of pluginFiles) {
+        const module = await import(`./plugins/${file}`);
+        plugins.push(module.default);
+      }
+      renderCommands();
+    }
+
+    function renderCommands() {
+      const container = document.getElementById("commands");
+      plugins.forEach(plugin => {
+        const btn = document.createElement("button");
+        btn.textContent = `⚙️ ${plugin.name}`;
+        btn.onclick = () => runCommand(plugin);
+        container.appendChild(btn);
+      });
+    }
+
+    function runCommand(plugin) {
+      document.getElementById("loader").style.width = '0';
+      document.getElementById("loader").style.animation = 'load 1.5s forwards';
+
+      const result = plugin.run();
+      setTimeout(() => {
+        document.getElementById("result").innerHTML = result;
+        autoReact();
+      }, 1600);
+    }
+
+    function autoReact() {
+      const emojis = ['🎉', '✅', '⚡', '🚀', '💡'];
+      const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+      document.getElementById("result").innerHTML += `<div style='margin-top:10px;'>${emoji} Auto Reaction!</div>`;
+    }
+
+    function rotateQuotes() {
+      const quotes = [
+        "The best way to predict the future is to invent it.",
+        "Dream big. Start small. Act now.",
+        "Every great idea begins with a challenge.",
+        "Success is built on consistency.",
+        "Automate the boring, amplify the creative."
+      ];
+      let i = 0;
+      setInterval(() => {
+        document.getElementById("quoteBox").textContent = `💡 ${quotes[i]}`;
+        i = (i + 1) % quotes.length;
+      }, 6000);
+    }
+
+    loadPlugins();
+    rotateQuotes();
+  </script>
+</body>
+</html>
